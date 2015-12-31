@@ -1,0 +1,44 @@
+<project basedir="." default="jar">
+	<property name="ant.dir" value="ant"/>
+	<property file="${ant.dir}/build.properties"/>
+	<property file="${ant.dir}/${user.name}.properties"/>
+
+	<path id="lib.path.ref">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${bin.dir}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="compile" depends="clean, init">
+		<javac debug="yes" srcdir="${src.main.dir}/java" destdir="${bin.dir}" includeantruntime="false">
+			<classpath refid="lib.path.ref" />
+		</javac>
+	</target>
+
+	<target name="copyres">
+		<!-- cp src/main/scripts/* dist/. -->
+		<copy todir="${bin.dir}/res">
+			<fileset dir="${src.main.dir}/res">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile, copyres">
+		<delete file="dist/${release.jar}" />
+		<jar destfile="dist/${release.jar}">
+			<fileset dir="bin">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+</project>
